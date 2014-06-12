@@ -8,8 +8,11 @@
    (string? val) {:type :string :value val}
    (symbol? val) {:type :symbol :value val}
    (seq? val) {:type :list :value (map make-ast val)}
-   (fn? val) {:type :procedure :primitive val}
+   (fn? val) (throw (Throwable. "Need make-proc to make procs"))
    :else (throw (Throwable. "Unknown type"))))
+
+(defn make-proc [val operandtype returntype]
+   {:type :procedure :takes operandtype :returns returntype :primitive val})
 
 (declare apply)
 (declare eval)
@@ -27,8 +30,8 @@
               ['+ 
                '=
                ] 
-              [(make-ast +) 
-               (make-ast =)
+              [(make-proc + :number :number)
+               (make-proc = :number :number)
                ]
               ))
 
